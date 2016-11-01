@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Todo list</title>
+  <style>
+  .toogle-done {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .done {
+    background: #00BFFF;
+    color: #282C34;
+  }
+  .not-done {
+    color: #777;
+  }
+
+  input[type='checkbox']{
+    font-size: 24px;
+  }
+
+  </style>
+</head>
+<body ng-app="todosApp">
+
+  <div ng-controller="TodosController">
+     <ul ng-repeat="todo in todos track by $index">
+       <li>
+         <input type="checkbox" ng-model="todo.done">
+         <span>{{todo.text}}</span>
+         <span ng-class="{ 'done': todo.done , 'not-done': !todo.done}">
+           {{todo.done ? "done" : "pending"}}
+         </span>
+         <button ng-click="deleteTodo(todo)">delete</button>
+       </li>
+     </ul>
+
+     <div>
+
+        <form novalidate name="formNewTodo" ng-submit="createTodo()">
+          <input
+          ng-minlength="2"
+          ng-model="todo.text"
+          ng-init = "todo = {}"
+          type="text"
+          ng-model="todo.text"
+          required
+          >
+          <button ng-disabled="formNewTodo.$invalid" type="submit" name="button">
+            Create todo
+          </button>
+        </form>
+
+     </div>
+  </div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+<script type="text/javascript">
+  var myApp = angular.module('todosApp', []);
+
+  myApp.controller('TodosController', ['$scope', function($scope) {
+    $scope.todos = [{text: 'first todo', done: false}];
+
+    function deleteTodo(t){
+      var index = $scope.todos.indexOf(t);
+      $scope.todos.splice(index, 1);
+    }
+
+    function createTodo() {
+      $scope.todos.push({text: $scope.todo.text, done: false})
+      $scope.todo = null;
+    }
+
+    function toogleDone(t) {
+      var index = $scope.todos.indexOf(t);
+      var obj = $scope.todos[index];
+      obj.done = !obj.done;
+      $scope.todos[index] = obj;
+    }
+
+    $scope.deleteTodo = deleteTodo;
+    $scope.createTodo = createTodo;
+    $scope.toogleDone = toogleDone;
+
+  }]);
+</script>
+</body>
+</html>
